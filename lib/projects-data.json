@@ -1,0 +1,45 @@
+[
+  {
+    "id": "sample1",
+    "title": "Modern Office Building - City Centre",
+    "description": "Complete double glazing replacement for a 5-story office building. Installed 120 energy-efficient windows with minimal business disruption.",
+    "propertyType": "Office Building",
+    "location": "Manchester",
+    "images": [
+      "https://images.unsplash.com/photo-1497366216548-37526070297c?w=800",
+      "https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=800"
+    ],
+    "completedDate": "2024-01-15",
+    "services": ["Commercial Double Glazed Windows", "Window Replacement"],
+    "createdAt": "2024-01-10T10:00:00Z"
+  },
+  {
+    "id": "sample2",
+    "title": "Retail Chain - Multiple Locations",
+    "description": "Large-scale commercial door installation across 8 retail locations. Heavy-duty entrance doors designed for high-traffic areas.",
+    "propertyType": "Retail",
+    "location": "Liverpool",
+    "images": [
+      "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800",
+      "https://images.unsplash.com/photo-1555529908-3afb9c2e0d02?w=800"
+    ],
+    "completedDate": "2024-02-20",
+    "services": ["Commercial Entrance Doors"],
+    "createdAt": "2024-02-01T10:00:00Z"
+  },
+  {
+    "id": "sample3",
+    "title": "Warehouse Facility - Industrial",
+    "description": "Large sliding door systems installed for a 10,000 sq ft warehouse. Maximized natural light and improved operational efficiency.",
+    "propertyType": "Warehouse",
+    "location": "Birmingham",
+    "images": [
+      "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800",
+      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800"
+    ],
+    "completedDate": "2024-03-10",
+    "services": ["Commercial Sliding Doors"],
+    "createdAt": "2024-02-20T10:00:00Z"
+  }
+]
+

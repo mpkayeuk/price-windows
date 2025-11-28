@@ -19,8 +19,10 @@ export default function Navbar() {
           <div className="hidden md:flex items-center space-x-8">
             <a href="#home" className="text-gray-700 hover:text-primary-600 transition flex items-center h-10">Home</a>
             <a href="#services" className="text-gray-700 hover:text-primary-600 transition flex items-center h-10">Services</a>
+            <a href="/projects" className="text-gray-700 hover:text-primary-600 transition flex items-center h-10">Projects</a>
             <a href="#why-us" className="text-gray-700 hover:text-primary-600 transition flex items-center h-10">Why Us</a>
             <a href="#testimonials" className="text-gray-700 hover:text-primary-600 transition flex items-center h-10">Testimonials</a>
+            <a href="/admin" className="text-gray-500 hover:text-gray-700 transition flex items-center h-10 text-sm">Admin</a>
             <a href="#contact" className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition flex items-center h-10">
               Get Quote
             </a>
@@ -50,8 +52,10 @@ export default function Navbar() {
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t">
             <a href="#home" className="block px-3 py-2 text-gray-700 hover:bg-primary-50 rounded">Home</a>
             <a href="#services" className="block px-3 py-2 text-gray-700 hover:bg-primary-50 rounded">Services</a>
+            <a href="/projects" className="block px-3 py-2 text-gray-700 hover:bg-primary-50 rounded">Projects</a>
             <a href="#why-us" className="block px-3 py-2 text-gray-700 hover:bg-primary-50 rounded">Why Us</a>
             <a href="#testimonials" className="block px-3 py-2 text-gray-700 hover:bg-primary-50 rounded">Testimonials</a>
+            <a href="/admin" className="block px-3 py-2 text-gray-500 hover:bg-primary-50 rounded">Admin</a>
             <a href="#contact" className="block px-3 py-2 bg-primary-600 text-white rounded text-center">Get Quote</a>
           </div>
         </div>
