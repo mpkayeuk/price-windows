@@ -2,8 +2,22 @@ import { cookies } from 'next/headers'
 import bcrypt from 'bcryptjs'
 
 const SESSION_COOKIE_NAME = 'admin_session'
-const ADMIN_USERNAME = 'rob'
-const ADMIN_PASSWORD = 'robber'
+
+function getAdminUsername(): string {
+  const username = process.env.ADMIN_USERNAME
+  if (!username) {
+    throw new Error('ADMIN_USERNAME environment variable is not set')
+  }
+  return username
+}
+
+function getAdminPassword(): string {
+  const password = process.env.ADMIN_PASSWORD
+  if (!password) {
+    throw new Error('ADMIN_PASSWORD environment variable is not set')
+  }
+  return password
+}
 
 // Generate session token
 function generateSessionToken(): string {
@@ -36,12 +50,20 @@ export async function verifySession(): Promise<boolean> {
 
 // Login
 export async function login(username: string, password: string): Promise<{ success: boolean; error?: string; sessionToken?: string }> {
-  if (username !== ADMIN_USERNAME) {
-    return { success: false, error: 'Invalid credentials' }
-  }
-  
-  if (password !== ADMIN_PASSWORD) {
-    return { success: false, error: 'Invalid credentials' }
+  try {
+    const adminUsername = getAdminUsername()
+    const adminPassword = getAdminPassword()
+    
+    if (username !== adminUsername) {
+      return { success: false, error: 'Invalid credentials' }
+    }
+    
+    if (password !== adminPassword) {
+      return { success: false, error: 'Invalid credentials' }
+    }
+  } catch (error) {
+    console.error('Authentication configuration error:', error)
+    return { success: false, error: 'Authentication not configured. Please set ADMIN_USERNAME and ADMIN_PASSWORD environment variables.' }
   }
   
   const sessionToken = generateSessionToken()

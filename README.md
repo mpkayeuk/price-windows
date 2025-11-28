@@ -43,6 +43,12 @@ npm install
      POSTGRES_PRISMA_URL="your-prisma-url"
      POSTGRES_URL_NON_POOLING="your-non-pooling-url"
      ```
+   - **Required:** Set admin credentials:
+     ```
+     ADMIN_USERNAME="rob"
+     ADMIN_PASSWORD="robber"
+     ```
+     These are required for accessing the admin panel at `/admin`
 
 4. Run the development server:
 ```bash
@@ -69,6 +75,11 @@ The database table will be automatically created on first use.
    - The database connection strings are automatically added to your Vercel project
    - No manual configuration needed if you create the database through Vercel
    - For local development, copy the connection strings to `.env.local`
+   - **Required: Add admin credentials in Vercel:**
+     - Go to your project Settings > Environment Variables
+     - Add `ADMIN_USERNAME` and `ADMIN_PASSWORD`
+     - These are **required** - the admin panel will not work without them
+     - Use strong, secure passwords in production
 
 ### Deploy Options
 
