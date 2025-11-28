@@ -63,6 +63,9 @@ export async function getProjects(): Promise<Project[]> {
 export async function createProject(project: Project): Promise<Project> {
   try {
     await initDatabase()
+    const imagesArray = project.images || []
+    const servicesArray = project.services || []
+    
     await sql`
       INSERT INTO projects (
         id,
@@ -80,9 +83,9 @@ export async function createProject(project: Project): Promise<Project> {
         ${project.description},
         ${project.propertyType},
         ${project.location},
-        ${sql.array(project.images || [])},
+        ${JSON.stringify(imagesArray)}::json::text[],
         ${project.completedDate},
-        ${sql.array(project.services || [])},
+        ${JSON.stringify(servicesArray)}::json::text[],
         ${project.createdAt}
       )
     `
@@ -97,6 +100,9 @@ export async function createProject(project: Project): Promise<Project> {
 export async function updateProject(id: string, project: Partial<Project>): Promise<Project> {
   try {
     await initDatabase()
+    const imagesArray = project.images || []
+    const servicesArray = project.services || []
+    
     await sql`
       UPDATE projects
       SET 
@@ -104,9 +110,9 @@ export async function updateProject(id: string, project: Partial<Project>): Prom
         description = ${project.description},
         property_type = ${project.propertyType},
         location = ${project.location},
-        images = ${sql.array(project.images || [])},
+        images = ${JSON.stringify(imagesArray)}::json::text[],
         completed_date = ${project.completedDate},
-        services = ${sql.array(project.services || [])}
+        services = ${JSON.stringify(servicesArray)}::json::text[]
       WHERE id = ${id}
     `
     
