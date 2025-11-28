@@ -16,12 +16,12 @@ export default function Navbar() {
           </div>
           
           {/* Desktop Menu */}
-          <div className="hidden md:flex space-x-8">
-            <a href="#home" className="text-gray-700 hover:text-primary-600 transition">Home</a>
-            <a href="#services" className="text-gray-700 hover:text-primary-600 transition">Services</a>
-            <a href="#why-us" className="text-gray-700 hover:text-primary-600 transition">Why Us</a>
-            <a href="#testimonials" className="text-gray-700 hover:text-primary-600 transition">Testimonials</a>
-            <a href="#contact" className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition">
+          <div className="hidden md:flex items-center space-x-8">
+            <a href="#home" className="text-gray-700 hover:text-primary-600 transition flex items-center h-10">Home</a>
+            <a href="#services" className="text-gray-700 hover:text-primary-600 transition flex items-center h-10">Services</a>
+            <a href="#why-us" className="text-gray-700 hover:text-primary-600 transition flex items-center h-10">Why Us</a>
+            <a href="#testimonials" className="text-gray-700 hover:text-primary-600 transition flex items-center h-10">Testimonials</a>
+            <a href="#contact" className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition flex items-center h-10">
               Get Quote
             </a>
           </div>
