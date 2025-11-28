@@ -1,21 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { promises as fs } from 'fs'
-import path from 'path'
-import { Project } from '@/lib/projects'
+import { deleteProject, updateProject } from '@/lib/db'
 
-const dataFilePath = path.join(process.cwd(), 'lib', 'projects-data.json')
-
-async function getProjects(): Promise<Project[]> {
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
-    const fileContents = await fs.readFile(dataFilePath, 'utf8')
-    return JSON.parse(fileContents)
+    const body = await request.json()
+    const updatedProject = await updateProject(params.id, body)
+    return NextResponse.json(updatedProject)
   } catch (error) {
-    return []
+    console.error('Error updating project:', error)
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    return NextResponse.json({ 
+      error: 'Failed to update project',
+      details: errorMessage 
+    }, { status: 500 })
   }
-}
-
-async function saveProjects(projects: Project[]): Promise<void> {
-  await fs.writeFile(dataFilePath, JSON.stringify(projects, null, 2))
 }
 
 export async function DELETE(
@@ -23,11 +24,10 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const projects = await getProjects()
-    const filtered = projects.filter(p => p.id !== params.id)
-    await saveProjects(filtered)
+    await deleteProject(params.id)
     return NextResponse.json({ success: true })
   } catch (error) {
+    console.error('Error deleting project:', error)
     return NextResponse.json({ error: 'Failed to delete project' }, { status: 500 })
   }
 }

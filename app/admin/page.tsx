@@ -1,13 +1,17 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { Project } from '@/lib/projects'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 
 export default function AdminPage() {
+  const router = useRouter()
   const [projects, setProjects] = useState<Project[]>([])
   const [loading, setLoading] = useState(true)
+  const [authenticated, setAuthenticated] = useState<boolean | null>(null)
+  const [editingId, setEditingId] = useState<string | null>(null)
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -22,8 +26,32 @@ export default function AdminPage() {
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
 
   useEffect(() => {
-    fetchProjects()
-  }, [])
+    // Check authentication
+    fetch('/api/auth/verify')
+      .then(res => res.json())
+      .then(data => {
+        if (data.authenticated) {
+          setAuthenticated(true)
+          fetchProjects()
+        } else {
+          setAuthenticated(false)
+          router.push('/login')
+        }
+      })
+      .catch(() => {
+        setAuthenticated(false)
+        router.push('/login')
+      })
+  }, [router])
+
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' })
+      router.push('/login')
+    } catch (error) {
+      console.error('Logout error:', error)
+    }
+  }
 
   const fetchProjects = async () => {
     try {
@@ -37,13 +65,46 @@ export default function AdminPage() {
     }
   }
 
+  const resetForm = () => {
+    setFormData({
+      title: '',
+      description: '',
+      propertyType: '',
+      location: '',
+      images: [],
+      completedDate: '',
+      services: [],
+    })
+    setImageUrl('')
+    setServiceInput('')
+    setEditingId(null)
+  }
+
+  const handleEditProject = (project: Project) => {
+    setEditingId(project.id)
+    setFormData({
+      title: project.title,
+      description: project.description,
+      propertyType: project.propertyType,
+      location: project.location,
+      images: project.images || [],
+      completedDate: project.completedDate,
+      services: project.services || [],
+    })
+    // Scroll to form
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setMessage(null)
 
     try {
-      const res = await fetch('/api/projects', {
-        method: 'POST',
+      const url = editingId ? `/api/projects/${editingId}` : '/api/projects'
+      const method = editingId ? 'PUT' : 'POST'
+      
+      const res = await fetch(url, {
+        method,
         headers: {
           'Content-Type': 'application/json',
         },
@@ -51,24 +112,22 @@ export default function AdminPage() {
       })
 
       if (res.ok) {
-        setMessage({ type: 'success', text: 'Project added successfully!' })
-        setFormData({
-          title: '',
-          description: '',
-          propertyType: '',
-          location: '',
-          images: [],
-          completedDate: '',
-          services: [],
+        setMessage({ 
+          type: 'success', 
+          text: editingId ? 'Project updated successfully!' : 'Project added successfully!' 
         })
-        setImageUrl('')
-        setServiceInput('')
+        resetForm()
         fetchProjects()
       } else {
-        setMessage({ type: 'error', text: 'Failed to add project' })
+        const errorData = await res.json().catch(() => ({}))
+        const errorMessage = errorData.details || errorData.error || `Failed to ${editingId ? 'update' : 'add'} project`
+        setMessage({ type: 'error', text: `Error: ${errorMessage}` })
+        console.error(`Failed to ${editingId ? 'update' : 'add'} project:`, errorData)
       }
     } catch (error) {
-      setMessage({ type: 'error', text: 'Error adding project' })
+      const errorMessage = error instanceof Error ? error.message : `Error ${editingId ? 'updating' : 'adding'} project`
+      setMessage({ type: 'error', text: `Error: ${errorMessage}` })
+      console.error(`Error ${editingId ? 'updating' : 'adding'} project:`, error)
     }
   }
 
@@ -125,14 +184,61 @@ export default function AdminPage() {
     }
   }
 
+  const handleSeedDatabase = async () => {
+    if (!confirm('This will add 6 sample projects to the database. Continue?')) return
+
+    setMessage(null)
+    try {
+      const res = await fetch('/api/seed', {
+        method: 'POST',
+      })
+
+      const data = await res.json()
+
+      if (res.ok && data.success) {
+        setMessage({ type: 'success', text: data.message || 'Sample projects added successfully!' })
+        fetchProjects()
+      } else {
+        setMessage({ type: 'error', text: data.details || data.error || 'Failed to seed database' })
+      }
+    } catch (error) {
+      setMessage({ type: 'error', text: 'Error seeding database' })
+      console.error('Error seeding database:', error)
+    }
+  }
+
+  if (authenticated === null) {
+    return (
+      <main className="min-h-screen bg-gray-50">
+        <Navbar />
+        <div className="pt-16 flex items-center justify-center min-h-screen">
+          <p className="text-gray-600">Checking authentication...</p>
+        </div>
+        <Footer />
+      </main>
+    )
+  }
+
+  if (!authenticated) {
+    return null // Will redirect to login
+  }
+
   return (
     <main className="min-h-screen bg-gray-50">
       <Navbar />
       <div className="pt-16">
         <section className="py-12 bg-gradient-to-br from-primary-600 via-primary-700 to-primary-800 text-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h1 className="text-4xl font-bold mb-2">Admin Panel</h1>
-            <p className="text-primary-100">Manage your projects</p>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+            <div>
+              <h1 className="text-4xl font-bold mb-2">Admin Panel</h1>
+              <p className="text-primary-100">Manage your projects</p>
+            </div>
+            <button
+              onClick={handleLogout}
+              className="bg-white text-primary-700 px-6 py-2 rounded-lg hover:bg-primary-50 transition font-semibold"
+            >
+              Logout
+            </button>
           </div>
         </section>
 
@@ -151,7 +257,20 @@ export default function AdminPage() {
             )}
 
             <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Add New Project</h2>
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-gray-900">
+                  {editingId ? 'Edit Project' : 'Add New Project'}
+                </h2>
+                {editingId && (
+                  <button
+                    type="button"
+                    onClick={resetForm}
+                    className="text-gray-600 hover:text-gray-900 px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 transition"
+                  >
+                    Cancel
+                  </button>
+                )}
+              </div>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
                   <label className="block text-gray-700 font-semibold mb-2">
@@ -320,17 +439,38 @@ export default function AdminPage() {
                   )}
                 </div>
 
-                <button
-                  type="submit"
-                  className="w-full bg-primary-600 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-primary-700 transition transform hover:scale-105 shadow-lg"
-                >
-                  Add Project
-                </button>
+                <div className="flex gap-4">
+                  <button
+                    type="submit"
+                    className="flex-1 bg-primary-600 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-primary-700 transition transform hover:scale-105 shadow-lg"
+                  >
+                    {editingId ? 'Update Project' : 'Add Project'}
+                  </button>
+                  {editingId && (
+                    <button
+                      type="button"
+                      onClick={resetForm}
+                      className="px-8 py-4 rounded-lg font-semibold text-lg border border-gray-300 text-gray-700 hover:bg-gray-50 transition"
+                    >
+                      Cancel
+                    </button>
+                  )}
+                </div>
               </form>
             </div>
 
             <div className="bg-white rounded-xl shadow-lg p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Existing Projects ({projects.length})</h2>
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-gray-900">Existing Projects ({projects.length})</h2>
+                {projects.length === 0 && (
+                  <button
+                    onClick={handleSeedDatabase}
+                    className="bg-primary-600 text-white px-6 py-3 rounded-lg hover:bg-primary-700 transition font-semibold"
+                  >
+                    Add Sample Projects
+                  </button>
+                )}
+              </div>
               {loading ? (
                 <p className="text-gray-600">Loading...</p>
               ) : projects.length === 0 ? (
@@ -348,12 +488,20 @@ export default function AdminPage() {
                           {project.propertyType} • {project.location} • {new Date(project.completedDate).toLocaleDateString()}
                         </p>
                       </div>
-                      <button
-                        onClick={() => handleDeleteProject(project.id)}
-                        className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition ml-4"
-                      >
-                        Delete
-                      </button>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleEditProject(project)}
+                          className="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDeleteProject(project.id)}
+                          className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
+                        >
+                          Delete
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
