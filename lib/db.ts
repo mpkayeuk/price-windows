@@ -80,9 +80,9 @@ export async function createProject(project: Project): Promise<Project> {
         ${project.description},
         ${project.propertyType},
         ${project.location},
-        ${project.images || []}::text[],
+        ${sql.array(project.images || [])},
         ${project.completedDate},
-        ${project.services || []}::text[],
+        ${sql.array(project.services || [])},
         ${project.createdAt}
       )
     `
@@ -104,9 +104,9 @@ export async function updateProject(id: string, project: Partial<Project>): Prom
         description = ${project.description},
         property_type = ${project.propertyType},
         location = ${project.location},
-        images = ${project.images || []}::text[],
+        images = ${sql.array(project.images || [])},
         completed_date = ${project.completedDate},
-        services = ${project.services || []}::text[]
+        services = ${sql.array(project.services || [])}
       WHERE id = ${id}
     `
     
