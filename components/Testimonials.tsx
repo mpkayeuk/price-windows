@@ -3,7 +3,7 @@ export default function Testimonials() {
     {
       name: 'Sarah Johnson',
       company: 'TechCorp Ltd - Office Building',
-      text: 'Price Windows and Doors transformed our entire office building. The installation was completed with minimal disruption to our operations, and our energy costs have dropped significantly. Professional service from start to finish.',
+      text: 'Price Glazing transformed our entire office building. The installation was completed with minimal disruption to our operations, and our energy costs have dropped significantly. Professional service from start to finish.',
       rating: 5,
     },
     {
@@ -15,7 +15,7 @@ export default function Testimonials() {
     {
       name: 'Emma Williams',
       company: 'Modern Spaces Co - Warehouse Facility',
-      text: 'Our warehouse needed urgent window replacements. Price Windows and Doors handled the large-scale commercial project efficiently, stayed within budget, and the results exceeded expectations. Highly recommended for commercial work!',
+      text: 'Our warehouse needed urgent window replacements. Price Glazing handled the large-scale commercial project efficiently, stayed within budget, and the results exceeded expectations. Highly recommended for commercial work!',
       rating: 5,
     },
   ]

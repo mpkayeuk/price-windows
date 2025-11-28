@@ -1,6 +1,6 @@
-# Price Windows and Doors
+# Price Glazing
 
-A beautiful, modern sales website for Price Windows and Doors - a commercial double glazing company.
+A beautiful, modern sales website for Price Glazing - a commercial double glazing company.
 
 **Tagline:** "Price, not pricey!"
 

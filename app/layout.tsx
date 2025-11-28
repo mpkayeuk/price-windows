@@ -5,7 +5,7 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Price Windows and Doors - Commercial Double Glazing Specialists | Price, not pricey!',
+  title: 'Price Glazing - Commercial Double Glazing Specialists | Price, not pricey!',
   description: 'Commercial double glazing specialists for offices, retail, warehouses & industrial properties. High-quality windows and doors at affordable prices. Price, not pricey!',
 }
 
