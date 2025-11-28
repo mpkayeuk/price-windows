@@ -45,8 +45,8 @@ npm install
      ```
    - **Required:** Set admin credentials:
      ```
-     ADMIN_USERNAME="rob"
-     ADMIN_PASSWORD="robber"
+     ADMIN_USERNAME=""
+     ADMIN_PASSWORD=""
      ```
      These are required for accessing the admin panel at `/admin`
 
